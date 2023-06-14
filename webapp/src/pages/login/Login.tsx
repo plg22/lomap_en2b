@@ -10,7 +10,7 @@ const Login = () => {
         
         e.preventDefault(); //if not used, the page will reload and data will be lost
         login({
-          redirectUrl: "http://172.162.240.176:3000/main/", // after redirect, come to the actual page
+          redirectUrl: "http://localhost:3000/main/", // after redirect, come to the actual page
           oidcIssuer: idp, // redirect to the url
           clientName: "Lo Map",
         });
