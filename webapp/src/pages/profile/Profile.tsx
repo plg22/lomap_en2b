@@ -1,3 +1,4 @@
+import 'leaflet/dist/leaflet.css';
 import "./profile.css";
 
 import {makeRequest} from "../../axios";
@@ -76,12 +77,16 @@ function Profile(): JSX.Element {
           
           
         </div>
-        <MapContainer center={[50.847, 4.357]} zoom={13} scrollWheelZoom={true}>
-        <TileLayer
-            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
-      </MapContainer>;
+        <MapContainer center={[50.847, 4.357]} 
+                zoom={13}
+                scrollWheelZoom={true}
+                style={{ height: '95%', width: '75%' }}>
+                        
+                <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                />
+            </MapContainer>
 
       </div>
   );

@@ -5,6 +5,7 @@ import {
 } from "@mui/material";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import {useEffect, useRef, useState} from "react";
+import 'leaflet/dist/leaflet.css';
 import "../../map/stylesheets/addLandmark.css"
 import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
 import {Landmark, LandmarkCategories, Review} from "../../shared/shareddtypes";
@@ -113,7 +114,7 @@ export default function LandmarkFriend() : JSX.Element{
         let landmark : Landmark = landmarks.get(selectedMarker) as Landmark;
         await addLandmarkScore(session.info.webId!, landmark, score);
     };
-    return  <Grid container>
+    return  <Grid style={{ height: '89vh', width: '100%', marginLeft: '3vw' }} container>
                 <Grid item xs = {12}>
                     <Typography variant="h1" component="h1" 
                     textAlign={"center"} style={{color:"#FFF", fontSize: 46}} >
@@ -149,7 +150,7 @@ export default function LandmarkFriend() : JSX.Element{
                         </Grid> : null}
                 </Grid>
                 <Grid item xs = {7} className = "rightPane">
-                    <MapContainer center={[50.847, 4.357]} zoom={13} scrollWheelZoom={true} ref={map}>
+                    <MapContainer center={[50.847, 4.357]} zoom={13} scrollWheelZoom={true} ref={map} style={{ height: '95%', width: '95%' }}>
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

@@ -20,7 +20,7 @@
     "cucumber": "^6.0.7",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
-    "leaflet": "^1.9.3",
+    "leaflet": "^1.9.4",
     "leaflet-css": "^0.1.0",
     "mongoose": "^7.0.1",
     "react": "^18.2.0",

@@ -1,4 +1,5 @@
 import {useEffect, useState} from "react";
+import 'leaflet/dist/leaflet.css';
 import "../../map/stylesheets/home.css";
 import "./home.css"
 import {useSession} from "@inrupt/solid-ui-react";
@@ -7,7 +8,7 @@ import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
 import { getLandmarksPOD } from "../../solidHelper/solidLandmarkManagement";
 import markerIcon from "leaflet/dist/images/marker-icon.png"
 import { Icon } from "leaflet";
-import {makeRequest} from "../../axios";
+import {makeRequest} from "../../axios"; 
 
 function Home(): JSX.Element {
     const {session} = useSession();
@@ -50,14 +51,17 @@ function Home(): JSX.Element {
     return (
         <div className="homeContainer">
             <h1>Home</h1>
-            <MapContainer center={[50.847, 4.357]} zoom={13}
-                          scrollWheelZoom={true}>
+            <MapContainer center={[50.847, 4.357]} 
+                zoom={13}
+                scrollWheelZoom={true}
+                style={{ height: '95%', width: '75%' }}>
+                        
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 { generatedLandmarks }
-            </MapContainer>;
+            </MapContainer>
         </div>
     );
 }

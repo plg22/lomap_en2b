@@ -1,4 +1,5 @@
 import markerIcon from "leaflet/dist/images/marker-icon.png"
+import 'leaflet/dist/leaflet.css';
 import "./addLandmark.css";
 import "../../map/stylesheets/addLandmark.css"
 import React, {useRef, useState} from "react";
@@ -94,7 +95,7 @@ export default function AddLandmark() {
         return null;
     }
 
-    return <Grid container>
+    return <Grid style={{ height: '90vh', width: '100%' }} container>
             <Grid item xs = {12}>
             <Typography variant="h1" component="h1" textAlign={"center"} style={{color:"#FFF", fontSize: 46}} >Add a landmark</Typography>
             </Grid>
@@ -111,7 +112,7 @@ export default function AddLandmark() {
                                 {selectItems}
                             </Select>
                         </FormControl>
-                        <Grid container rowGap = {4} data-testid="thirdField-testid">
+                        <Grid container rowGap = {1} data-testid="thirdField-testid">
                             <FormControl fullWidth>
                                 <Typography style={{color:"#FFF"}}>Latitude:  </Typography>
                                 <Typography id = "latitude" style={{color:"#FFF"}}/>
@@ -151,21 +152,27 @@ export default function AddLandmark() {
                                 <Button type = "submit" variant = "contained" data-testid="Save button">
                                     Save new landmark
                                 </Button>
-                            </Grid> 
-                            : null
+                            </Grid> : <Grid item justifyContent="flex-end">
+                                <Button type = "submit" variant = "contained" data-testid="Save button" disabled>
+                                    Save new landmark
+                                </Button>
+                                </Grid>
                         }
                     </Grid>
                 </form>
             </Grid>
             <Grid item xs = {8} className = "rightPane">
-                <MapContainer center={[50.847, 4.357]} zoom={13} scrollWheelZoom={true} ref={map}>
+                <MapContainer center={[50.847, 4.357]} 
+                zoom={13} 
+                scrollWheelZoom={true} 
+                ref={map}
+                style={{ height: '95%', width: '95%' }}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <MapEvents />
-            </MapContainer>;
+            </MapContainer>
             </Grid>
         </Grid>
-        ;
 }
