@@ -14,6 +14,7 @@ import {makeRequest} from "../../axios";
 import {useSession} from "@inrupt/solid-ui-react";
 import {MapContainer, TileLayer, useMapEvents} from "react-leaflet";
 import {createLandmark} from "../../solidHelper/solidLandmarkManagement";
+import { Navigate } from 'react-router-dom';
 
 export default function AddLandmark() {
 
@@ -77,6 +78,8 @@ export default function AddLandmark() {
         if (webID !== undefined) {
             await createLandmark(webID, landmark);
         }
+        console.log('Redireccion a main');
+        <Navigate to="http://localhost:3000/main/" />
     };
 
     const map = useRef<L.Map>(null);

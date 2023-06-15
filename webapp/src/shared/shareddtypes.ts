@@ -12,7 +12,7 @@ export class Landmark  {
     category:string;
     latitude:number;
     longitude:number;
-    description?:string;
+    description:string;
     reviews?:Array<Review>;
     scores?:Map<string,Number>;
     pictures?:string[];

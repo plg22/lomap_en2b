@@ -26,7 +26,7 @@ export async function getLandmarksPOD(webID:string | undefined) {
     //throw new Error("The user is not logged in");
     return;
   }
-  let inventoryFolder = webID.split("profile")[0] + "private/lomap/inventory/index.ttl"; // inventory folder path
+  let inventoryFolder = webID.split("profile")[0] + "public/lomap/inventory/index.ttl"; // inventory folder path
   let landmarks: Landmark[] = []; // initialize array of landmarks
   let landmarkPaths; 
   try {
@@ -200,7 +200,7 @@ export async function getLandmarkScores(folder:string) {
  */
 export async function createLandmark(webID:string, landmark:Landmark) {
     let baseURL = webID.split("profile")[0]; // url of the type https://<nombre>.inrupt.net/
-    let landmarksFolder = baseURL + "private/lomap/inventory/index.ttl"; // inventory folder path
+    let landmarksFolder = baseURL + "public/lomap/inventory/index.ttl"; // inventory folder path
     let landmarkId;
     // add landmark to inventory
     try {
@@ -213,7 +213,7 @@ export async function createLandmark(webID:string, landmark:Landmark) {
       return; // if the landmark could not be added, return (error)
   
     // path for the new landmark dataset
-    let individualLandmarkFolder = baseURL + "private/lomap/locations/" + landmarkId + "/index.ttl";
+    let individualLandmarkFolder = baseURL + "public/lomap/locations/" + landmarkId + "/index.ttl";
   
     // create dataset for the landmark
     try {
@@ -231,7 +231,7 @@ export async function createLandmark(webID:string, landmark:Landmark) {
  */
 export async function addLandmarkToInventory(landmarksFolder:string, landmark:Landmark) {
     let landmarkId = "LOC_" + uuid(); // create landmark uuid
-    let landmarkURL = landmarksFolder.split("private")[0] + "private/lomap/locations/" + landmarkId + "/index.ttl#" + landmarkId // landmark dataset path
+    let landmarkURL = landmarksFolder.split("public")[0] + "public/lomap/locations/" + landmarkId + "/index.ttl#" + landmarkId // landmark dataset path
   
     let newLandmark = buildThing(createThing({name: landmarkId}))
       .addStringNoLocale(SCHEMA_INRUPT.identifier, landmarkURL) // add to the thing the path of the landmark dataset
@@ -255,7 +255,7 @@ export async function addLandmarkToInventory(landmarksFolder:string, landmark:La
  */
 export async function createInventory(landmarksFolder: string, landmark:Landmark){
     let landmarkId = "LOC_" + uuid(); // landmark uuid
-    let landmarkURL = landmarksFolder.split("private")[0] + "private/lomap/locations/" + landmarkId + "/index.ttl#" + landmarkId; // landmark dataset path
+    let landmarkURL = landmarksFolder.split("public")[0] + "public/lomap/locations/" + landmarkId + "/index.ttl#" + landmarkId; // landmark dataset path
   
     let newLandmark = buildThing(createThing({name: landmarkId})) // create thing with the landmark dataset path
       .addStringNoLocale(SCHEMA_INRUPT.identifier, landmarkURL)
@@ -273,7 +273,7 @@ export async function createInventory(landmarksFolder: string, landmark:Landmark
 
 /**
  * Create the landmark in the given folder
- * @param landmarkFolder contains the folder to store the landmark .../private/lomap/locations/${landmarkId}/index.ttl
+ * @param landmarkFolder contains the folder to store the landmark .../public/lomap/locations/${landmarkId}/index.ttl
  * @param landmark contains the landmark to be created
  * @param id contains the landmark uuid
  */
@@ -287,7 +287,7 @@ export async function createLandmarkDataSet(landmarkFolder:string, landmark:Land
     .addStringNoLocale(SCHEMA_INRUPT.name, landmark.name.toString())
     .addStringNoLocale(SCHEMA_INRUPT.longitude, landmark.longitude.toString())
     .addStringNoLocale(SCHEMA_INRUPT.latitude, landmark.latitude.toString())
-    .addStringNoLocale(SCHEMA_INRUPT.description, "No description")
+    .addStringNoLocale(SCHEMA_INRUPT.description, landmark.description.toString())
     .addStringNoLocale(SCHEMA_INRUPT.identifier, landmarkIdUrl) // store the url of the landmark
     .addStringNoLocale(SCHEMA_INRUPT.Product, landmark.category) // store string containing the categories
     .addUrl(RDF.type, "https://schema.org/Place")

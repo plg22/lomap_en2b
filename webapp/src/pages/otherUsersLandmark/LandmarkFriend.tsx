@@ -169,21 +169,21 @@ async function getData(setIsCommentEnabled : Function, setSelectedMarker : Funct
     let fetchedLandmarks = await getFriendsLandmarks(webId);
     if (fetchedLandmarks === undefined) return null;
     let landmarks : Landmark[] = fetchedLandmarks[0] as Landmark[];
-    if (!(document.getElementById("all") as HTMLInputElement).checked) {
-        landmarks = landmarks.filter(landmark => filters.get(landmark.category))
-    }
     setIsCommentEnabled(false);
     setSelectedMarker(-1);
     let landmarksComponent : JSX.Element[] = [];
     let mapLandmarks : Map<number, Landmark> = new Map<number, Landmark>();
     for (let i : number = 0; i < landmarks.length; i++) {
-        mapLandmarks.set(i, landmarks[i]);
-        landmarksComponent.push(<Marker position={[landmarks[i].latitude, landmarks[i].longitude]} eventHandlers={
+        console.log("Hola, entre una vez")
+        if ((document.getElementById(landmarks[i].category.toString().toLowerCase()) as HTMLInputElement).checked) {
+            mapLandmarks.set(i, landmarks[i]);
+            landmarksComponent.push(<Marker position={[landmarks[i].latitude, landmarks[i].longitude]} eventHandlers={
                 { click: () => {setIsCommentEnabled(true); setSelectedMarker(i);}}
             } icon = {L.icon({iconUrl: markerIcon})}>
                     <Popup>{landmarks[i].name} - {landmarks[i].category}</Popup>
                 </Marker>
         );
+        }
     }
     setLandmarks(mapLandmarks);
     setLandmarksReact(landmarksComponent);
@@ -227,6 +227,5 @@ function AddCommentForm(props : any) : JSX.Element {
 
 function getCategories() : string[] {
     let categories : string[] = Object.values(LandmarkCategories);
-    categories.push("All");
     return categories;
 } 
