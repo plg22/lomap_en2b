@@ -77,8 +77,18 @@ export default function AddLandmark() {
         let webID = session.info.webId;
         if (webID !== undefined) {
             await createLandmark(webID, landmark);
+            const id = webID.split("#")[0];
+            const url = new URL(id || "");
+            const hostParts = url.host.split('.');
+            const username = hostParts[0];
+            makeRequest.get("/users/"+username).then((res) => {
+                makeRequest.post("/users/score/" + res.data[0]._id).then((res) => {
+                    console.log(res.data.score);
+                })
+            })
+            console.log(username);
+            //makeRequest.post('/users/score/')
         }     
-        shouldRedirect = true;
     };
 
     const map = useRef<L.Map>(null);

@@ -5,7 +5,6 @@ import {makeRequest} from "../../axios";
 import {useParams} from "react-router";
 import {useEffect, useState} from "react";
 import {useSession} from "@inrupt/solid-ui-react";
-import {MapContainer, TileLayer} from "react-leaflet";
 
 function Profile(): JSX.Element {
   
@@ -14,6 +13,7 @@ function Profile(): JSX.Element {
   let uuid = useParams().id;
   const {session} = useSession();
   const [webID, setWebID] = useState<string>("");
+  const [score, setScore] = useState<Number>(0);
 
   useEffect(() =>{
     
@@ -24,6 +24,7 @@ function Profile(): JSX.Element {
       }
       makeRequest.get(`/solid/`+ uuid+"").then((res) => { setUser(res.data);});
       makeRequest.get("/users/id/"+uuid).then((res) => { setWebID(res.data.solidURL); });
+      makeRequest.get(`/users/score/`+ uuid+"").then((res) => { setScore(res.data.score);});
 
       let id;
 
@@ -61,8 +62,6 @@ function Profile(): JSX.Element {
               <img
                 className="profileUserImg"
                 src= {user.picture === null ? "/noAvatar.png" : user.picture}
-                
-                
               />
             </div>
             <div className="profileInfo">
@@ -72,7 +71,10 @@ function Profile(): JSX.Element {
           
           <div className="profileRightBottom">
           {session.info.webId?.split("#")[0] === webID ? "" : isFriend ? "You are already friends": "This user is not your friend" }
-          
+          </div>
+
+          <div className="profileScore">
+          Your current score is: {score}, keep adding landmarks to see how it grows!!!
           </div>
           
           

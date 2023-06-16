@@ -55,6 +55,11 @@
     flex-direction: row;
 }
 
+.profileScore {
+    display: flex;
+    flex-direction: row;
+}
+
 .profileBottom {
     flex: 1;
     display: flex;
