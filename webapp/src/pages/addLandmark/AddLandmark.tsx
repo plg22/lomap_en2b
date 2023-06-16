@@ -14,7 +14,6 @@ import {makeRequest} from "../../axios";
 import {useSession} from "@inrupt/solid-ui-react";
 import {MapContainer, TileLayer, useMapEvents} from "react-leaflet";
 import {createLandmark} from "../../solidHelper/solidLandmarkManagement";
-import { Navigate } from 'react-router-dom';
 
 export default function AddLandmark() {
 
@@ -25,6 +24,7 @@ export default function AddLandmark() {
     const {session} = useSession();
 
     let picture : string = "";
+    let shouldRedirect : boolean = false;
 
     const setPicture = (e : string) => {
         picture = e;
@@ -77,9 +77,8 @@ export default function AddLandmark() {
         let webID = session.info.webId;
         if (webID !== undefined) {
             await createLandmark(webID, landmark);
-        }
-        console.log('Redireccion a main');
-        <Navigate to="http://localhost:3000/main/" />
+        }     
+        shouldRedirect = true;
     };
 
     const map = useRef<L.Map>(null);
@@ -150,7 +149,7 @@ export default function AddLandmark() {
                                 }}/>
                             </FormControl>     
                             </Grid>
-                                {isButtonEnabled 
+                                {isButtonEnabled
                                 ? <Grid item justifyContent="flex-end">
                                 <Button type = "submit" variant = "contained" data-testid="Save button">
                                     Save new landmark
