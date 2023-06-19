@@ -87,7 +87,6 @@ export default function AddLandmark() {
                 })
             })
             console.log(username);
-            //makeRequest.post('/users/score/')
         }     
     };
 
