@@ -6,20 +6,23 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import {useEffect, useState} from "react";
 import {makeRequest} from "../../axios";
 import {useSession} from "@inrupt/solid-ui-react";
+import { wait } from "@testing-library/user-event/dist/utils";
 
 function LeftBar(): JSX.Element{
         const [user, setUser] = useState("");
         const {session} = useSession();
         useEffect(() => {
             const fetchUser = async () => {
+
                 const webId = session.info.webId?.split("#")[0];
               
                 await makeRequest.patch("/users/", {webId: webId}).then((res) => {
                    
                     setUser(res.data);
                 });
-                };
-                fetchUser();
+            };
+            wait(2000);
+            fetchUser();
 
         },[user,setUser]);
         return (

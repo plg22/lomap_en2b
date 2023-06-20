@@ -334,26 +334,26 @@ export async function addLandmarkImage(url: string, landmark:Landmark) {
  * @param review contains the review to be added to the landmark
  */
 export async function addLandmarkReview(landmark:Landmark, review:Review){
-    let url = landmark.url?.split("#")[0] as string; // get the path of the landmark dataset
-    // get dataset
-    let landmarkDataset = await getSolidDataset(url, {fetch: fetch})
-    // create review
-    let newReview = buildThing(createThing())
-      .addStringNoLocale(SCHEMA_INRUPT.name, review.title)
-      .addStringNoLocale(SCHEMA_INRUPT.description, review.content)
-      .addStringNoLocale(SCHEMA_INRUPT.startDate, review.date)
-      .addStringNoLocale(SCHEMA_INRUPT.Person, review.webId)
-      .addUrl(VCARD.Type, VCARD.hasNote)
-      .build();
-    // store the review in the landmark dataset
-    landmarkDataset = setThing(landmarkDataset, newReview)
-  
-    try {
-      // save dataset
-      landmarkDataset = await saveSolidDatasetAt(url, landmarkDataset, {fetch: fetch});
-    } catch (error){
-      console.log(error);
-    }
+  let url = landmark.url + "/index.ttl" as string
+  // get dataset
+  let locationDataset = await getSolidDataset(url, {fetch: fetch})
+  // create review
+  let newReview = buildThing(createThing())
+    .addStringNoLocale(SCHEMA_INRUPT.name, review.title)
+    .addStringNoLocale(SCHEMA_INRUPT.description, review.content)
+    .addStringNoLocale(SCHEMA_INRUPT.startDate, review.date)
+    .addStringNoLocale(SCHEMA_INRUPT.Person, review.webId)
+    .addUrl(VCARD.Type, VCARD.hasNote)
+    .build();
+  // store the review in the location dataset
+  locationDataset = setThing(locationDataset, newReview)
+
+  try {
+    // save dataset
+    locationDataset = await saveSolidDatasetAt(url, locationDataset, {fetch: fetch});
+  } catch (error){
+    console.log(error);
+  }
   }
   
   /**
@@ -363,24 +363,27 @@ export async function addLandmarkReview(landmark:Landmark, review:Review){
    * @param score contains the score of the rating
    */
   export async function addLandmarkScore(webId:string, landmark:Landmark, score:number){
-    let url = landmark.url?.split("#")[0] as string; // get landmark dataset path
-    // get dataset
-    let landmarkDataset = await getSolidDataset(url, {fetch: fetch})
-    // create score
-    let newScore = buildThing(createThing())
-      .addStringNoLocale(SCHEMA_INRUPT.value, score.toString())
-      .addStringNoLocale(SCHEMA_INRUPT.Person, webId)
-      .addUrl(VCARD.Type, VCARD.hasValue)
-      .build();
-    // add score to the dataset
-    landmarkDataset = setThing(landmarkDataset, newScore)
-  
-    try {
-      // save dataset
-      landmarkDataset = await saveSolidDatasetAt(url, landmarkDataset, {fetch: fetch});
-    } catch (error){
-      console.log(error);
-    }
+    let url = landmark.url + "/index.ttl" as string; // get location dataset path
+    console.log(url)
+  // get dataset
+  let locationDataset = await getSolidDataset(url, {fetch: fetch})
+  // create score
+  let newScore = buildThing(createThing())
+    .addStringNoLocale(SCHEMA_INRUPT.value, score.toString())
+    .addStringNoLocale(SCHEMA_INRUPT.Person, webId)
+    .addUrl(VCARD.Type, VCARD.hasValue)
+    .build();
+    console.log(newScore)
+  // add score to the dataset
+  locationDataset = setThing(locationDataset, newScore)
+  console.log(locationDataset)
+
+  try {
+    // save dataset
+    locationDataset = await saveSolidDatasetAt(url, locationDataset, {fetch: fetch});
+  } catch (error){
+    console.log(error);
+  }
   }
 
 

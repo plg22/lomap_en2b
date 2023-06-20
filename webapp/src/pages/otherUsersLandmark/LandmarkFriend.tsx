@@ -107,13 +107,19 @@ export default function LandmarkFriend() : JSX.Element{
         let date : string = new Date().toLocaleString();
         let review : Review = new Review(webId, date, "", "", comment);
         let landmark : Landmark = landmarks.get(selectedMarker) as Landmark;
+        console.log(landmark)
         await addLandmarkReview(landmark, review);
+        console.log('Se llega a mandar el comment')
     };
 
     const sendScore : Function = async (score : number) => {
         let landmark : Landmark = landmarks.get(selectedMarker) as Landmark;
+        console.log('Se llega a mandar el score')
+        console.log(landmark)
+        console.log(score)
         await addLandmarkScore(session.info.webId!, landmark, score);
     };
+
     return  <Grid style={{ height: '89vh', width: '100%', marginLeft: '3vw' }} container>
                 <Grid item xs = {12}>
                     <Typography variant="h1" component="h1" 
@@ -128,10 +134,9 @@ export default function LandmarkFriend() : JSX.Element{
                             {loadCategories()}
                         </FormControl>
                     </Grid>
-                    { isCommentEnabled ? <AddScoreForm sendScore={sendScore}/> : null }
-                    { isCommentEnabled ? <AddCommentForm sendComment={sendComment} /> : null}
-                    { isCommentEnabled ?
-                        <Grid>
+                    <AddScoreForm sendScore={sendScore}/>
+                    <AddCommentForm sendComment={sendComment} />
+                    <Grid>
                             <Typography style={{fontSize: 30}}> Name: </Typography>
                             <Typography> {getCurrentLandmark().name}</Typography>
                             <Typography style={{fontSize: 30}}> Category: </Typography>
@@ -147,7 +152,7 @@ export default function LandmarkFriend() : JSX.Element{
                             <Typography style={{fontSize: 30}}> Reviews: </Typography>
                             {getReviews()}
                             
-                        </Grid> : null}
+                        </Grid>
                 </Grid>
                 <Grid item xs = {7} className = "rightPane">
                     <MapContainer center={[50.847, 4.357]} zoom={13} scrollWheelZoom={true} ref={map} style={{ height: '95%', width: '95%' }}>
@@ -174,11 +179,10 @@ async function getData(setIsCommentEnabled : Function, setSelectedMarker : Funct
     let landmarksComponent : JSX.Element[] = [];
     let mapLandmarks : Map<number, Landmark> = new Map<number, Landmark>();
     for (let i : number = 0; i < landmarks.length; i++) {
-        console.log("Hola, entre una vez")
         if ((document.getElementById(landmarks[i].category.toString().toLowerCase()) as HTMLInputElement).checked) {
             mapLandmarks.set(i, landmarks[i]);
             landmarksComponent.push(<Marker position={[landmarks[i].latitude, landmarks[i].longitude]} eventHandlers={
-                { click: () => {setIsCommentEnabled(true); setSelectedMarker(i);}}
+                { click: () => {setIsCommentEnabled(true); setSelectedMarker(i); console.log('Landmark puesta: ' + i)}}
             } icon = {L.icon({iconUrl: markerIcon})}>
                     <Popup>{landmarks[i].name} - {landmarks[i].category}</Popup>
                 </Marker>
@@ -190,36 +194,42 @@ async function getData(setIsCommentEnabled : Function, setSelectedMarker : Funct
 }
 
 function AddScoreForm(props : any) : JSX.Element {
-    const sendScore : Function = () => {
-        let value : number = parseFloat((document.getElementById("comment") as HTMLInputElement)!.value);
-        props.sendScore(value);
+    const sendAScore : Function = () => {
+        if (document.getElementById("score") !== null) {
+            let value : number = parseFloat((document.getElementById("score") as HTMLInputElement)!.value);
+            console.log("Llego al primero");
+            if (!Number.isNaN(value)) {
+                props.sendScore(value);
+            }
+        }
     };
-    return <form method = "post" action="/landmarks/comments">
+    return <form>
             <Grid container rowSpacing={4}>
                 <Typography variant="h2" style={{color:"#FFF", fontSize:32}}>Add a score</Typography>
                 <FormControl fullWidth>
                     <InputLabel htmlFor="score" style={{color:"#FFF"}}>Score  </InputLabel>
-                    <Input type="number" name = "score" id = "score" inputProps={{min: 0, max: 10}} style={{color:"#FFF"}}/>
+                    <Input type="number" name = "score" id = "score" inputProps={{min: 1, max: 10}} style={{color:"#FFF"}}/>
                 </FormControl>
-                <Grid item><Button variant="contained">Score</Button></Grid>
+                <Grid item><Button onClick={sendAScore()} variant="contained">Score</Button></Grid>
             </Grid>
         </form>;
     }
 
 function AddCommentForm(props : any) : JSX.Element {
-    const sendComment : Function = () => {
+    const sendAComment : Function = () => {
         if (document.getElementById("comment") !== null) {
             let comment : string = (document.getElementById("comment") as HTMLInputElement).textContent!;
+            console.log('Llegamos al primero de comment')
             if (comment.trim() !== "") {props.sendComment(comment);}
         }
     };
-    return <form method = "post" onSubmit={sendComment()}>
+    return <form>
                 <Grid container rowSpacing={4}>
                     <Typography variant="h2" style={{color:"#FFF", fontSize:32}}>Add a comment</Typography>
                     <FormControl fullWidth>
                         <TextField id = "comment" name = "comment" multiline rows = {3} maxRows = {6} style={{color:"#FFF", fontSize:32}}/>
                     </FormControl>
-                    <Grid item><Button variant="contained">Comment</Button></Grid>
+                    <Grid item><Button onClick={sendAComment()} variant="contained">Comment</Button></Grid>
                 </Grid>
             </form>
 }
