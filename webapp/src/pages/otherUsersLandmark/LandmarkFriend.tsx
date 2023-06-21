@@ -6,7 +6,7 @@ import {
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import {useEffect, useRef, useState} from "react";
 import 'leaflet/dist/leaflet.css';
-import "../../map/stylesheets/addLandmark.css"
+import "../../map/stylesheets/friendsLandmark.css"
 import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
 import {Landmark, LandmarkCategories, Review} from "../../shared/shareddtypes";
 import L from "leaflet";
@@ -120,7 +120,7 @@ export default function LandmarkFriend() : JSX.Element{
         await addLandmarkScore(session.info.webId!, landmark, score);
     };
 
-    return  <Grid style={{ height: '89vh', width: '100%', marginLeft: '3vw' }} container>
+    return  <div className="mainContainer"><Grid style={{ height: '89vh', width: '100%', marginLeft: '3vw' }} container>
                 <Grid item xs = {12}>
                     <Typography variant="h1" component="h1" 
                     textAlign={"center"} style={{color:"#FFF", fontSize: 46}} >
@@ -163,7 +163,7 @@ export default function LandmarkFriend() : JSX.Element{
                         {landmarksReact}
                     </MapContainer>
                 </Grid>
-            </Grid>
+            </Grid></div>
         ;
 }
 
@@ -186,7 +186,7 @@ async function getData(setIsCommentEnabled : Function, setSelectedMarker : Funct
             } icon = {L.icon({iconUrl: markerIcon})}>
                     <Popup>{landmarks[i].name} - {landmarks[i].category}</Popup>
                 </Marker>
-        );
+            );
         }
     }
     setLandmarks(mapLandmarks);
