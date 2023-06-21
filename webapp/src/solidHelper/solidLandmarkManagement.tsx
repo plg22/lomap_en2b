@@ -32,20 +32,16 @@ export async function getLandmarksPOD(webID:string | undefined) {
   try {
     let dataSet = await getSolidDataset(inventoryFolder, {fetch: fetch}); // get the inventory dataset
     landmarkPaths = getThingAll(dataSet) // get the things from the dataset (landmark paths)
-    for (let landmarkPath of landmarkPaths) { // for each landmark in the dataset
-      // get the path of the actual landmark
-      let path = getStringNoLocale(landmarkPath, SCHEMA_INRUPT.identifier) as string;
-      // get the landmark : Landmark from the dataset of that landmark
-      try{
-        let landmark = await getLandmarkFromDataset(path)
-        landmarks.push(landmark)
-        // add the landmark to the array
-      }
-      catch(error){
-        //The url is not accessed(no permision)
-      }
-     
-    }
+    
+    const requests = landmarkPaths.map(landmarkPath => getLandmarkFromDataset(landmarkPath));
+    
+    const results = await Promise.allSettled(requests);
+    const successfulResults = results
+    .filter(result => result.status === 'fulfilled')
+    .map(result => result.status === 'fulfilled' ? result.value : null)
+    .filter(value => value !== null) as Landmark[];
+    return successfulResults;
+
   } catch (error) {
     // if the landmark dataset does no exist, return empty array of landmarks
     landmarks = [];
@@ -59,10 +55,11 @@ export async function getLandmarksPOD(webID:string | undefined) {
  * @param landmarkPath contains the path of the landmark dataset
  * @returns landmark object
  */
-export async function getLandmarkFromDataset(landmarkPath:string){
-  let datasetPath = landmarkPath.split('#')[0] // get until index.ttl
+export async function getLandmarkFromDataset(landmarkPath:any){
+  let path = getStringNoLocale(landmarkPath, SCHEMA_INRUPT.identifier) as string;
+  let datasetPath = path.split('#')[0] // get until index.ttl
   let landmarkDataset = await getSolidDataset(datasetPath, {fetch: fetch}) // get the whole dataset
-  let landmarkAsThing = getThing(landmarkDataset, landmarkPath) as Thing; // get the landmark as thing
+  let landmarkAsThing = getThing(landmarkDataset, path) as Thing; // get the landmark as thing
 
   // retrieve landmark information
   let name = getStringNoLocale(landmarkAsThing, SCHEMA_INRUPT.name) as string; 
