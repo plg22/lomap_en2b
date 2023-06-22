@@ -6,7 +6,7 @@ import {
     getSolidDataset, saveSolidDatasetAt,
     createSolidDataset, getStringNoLocale,
     Thing, getThing, getThingAll,getUrl, 
-    getUrlAll, getFile, isRawData,
+    getUrlAll, getFile, isRawData, overwriteFile
   } from "@inrupt/solid-client";
   
   import { SCHEMA_INRUPT, RDF, FOAF, VCARD} from "@inrupt/vocab-common-rdf";
@@ -232,8 +232,8 @@ export async function createLandmark(webID:string, landmark:Landmark) {
 export async function addLandmarkToInventory(landmarksFolder:string, landmark:Landmark) {
   let inventory = await getSolidDataset(landmarksFolder, {fetch: fetch}) // get the inventory
   let locationId = "LOC_" + uuid(); // create location uuid
-  let baseURL = landmarksFolder.split("private")[0]
-  let locationURL = `${baseURL}private/lomap/locations/${locationId}/index.ttl#${locationId}` // create location dataset path
+  let baseURL = landmarksFolder.split("public")[0]
+  let locationURL = `${baseURL}public/lomap/locations/${locationId}/index.ttl#${locationId}` // create location dataset path
 
   let newLocation = buildThing(createThing({name: locationId}))
     .addStringNoLocale(SCHEMA_INRUPT.identifier, locationURL) // add to the thing the path of the location dataset
@@ -258,17 +258,19 @@ export async function createInventory(landmarksFolder: string, landmark:Landmark
     let landmarkId = "LOC_" + uuid(); // landmark uuid
     let landmarkURL = landmarksFolder.split("public")[0] + "public/lomap/locations/" + landmarkId + "/index.ttl#" + landmarkId; // landmark dataset path
   
+    let inventory = createSolidDataset() // create dataset for the inventory
+
     let newLandmark = buildThing(createThing({name: landmarkId})) // create thing with the landmark dataset path
       .addStringNoLocale(SCHEMA_INRUPT.identifier, landmarkURL)
       .build();
     
-    let inventory = createSolidDataset() // create dataset for the inventory
     inventory = setThing(inventory, newLandmark); // add name to inventory
+
     try {
       await saveSolidDatasetAt(landmarksFolder, inventory, {fetch: fetch}) // save inventory dataset
       return landmarkId;
     } catch (error) {
-      console.log(error);
+      console.log("Error linea 273");
     }
 }
 
@@ -308,19 +310,14 @@ export async function createLandmarkDataSet(imagesFolder:string, landmarkFolder:
  * @param landmark contains the landmark
  */
 export async function addLandmarkImage(url: string, landmark:Landmark) {
-    let landmarkDataset = await getSolidDataset(url, {fetch: fetch})
-    landmark.pictures?.forEach(async picture => { // for each picture of the landmark, build a thing and store it in dataset
-        let newImage = buildThing(createThing({name: picture}))
-        .addStringNoLocale(SCHEMA_INRUPT.image, picture)
-        .build();
-        landmarkDataset = setThing(landmarkDataset, newImage);
-        try {
-          landmarkDataset = await saveSolidDatasetAt(url, landmarkDataset, {fetch: fetch});
-        } catch (error){
-          console.log(error);
-        }
-      }
+  landmark.picturesAsFiles?.forEach(async picture => {
+  
+    const savedFile = await overwriteFile(  
+      url+"/"+picture.name,                              
+      picture,                                       
+      { contentType: picture.type, fetch: fetch }    
     );
+})
   }
 
 

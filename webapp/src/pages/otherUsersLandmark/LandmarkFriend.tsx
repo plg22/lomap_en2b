@@ -146,7 +146,7 @@ export default function LandmarkFriend() : JSX.Element{
                             <Typography style={{fontSize: 30}}> Description: </Typography>
                             <Typography> {getCurrentLandmark().description}</Typography>
                             <Typography style={{fontSize: 30}}> Picture: </Typography>
-                            {getPicture()===undefined ? <p>No picture uploaded</p> : <img src={getPicture()} alt="Landmark picture"></img>}
+                            {getPicture()===undefined ? <p>No picture uploaded</p> : <img id="foto" src={getPicture()} alt="Landmark picture"></img>}
                             <Typography style={{fontSize: 30}}> Score: </Typography>
                             <Typography> {getScore().toString() =="NaN" ? 0 : getScore() } </Typography>
                             <Typography style={{fontSize: 30}}> Reviews: </Typography>
@@ -155,7 +155,7 @@ export default function LandmarkFriend() : JSX.Element{
                         </Grid>
                 </Grid>
                 <Grid item xs = {7} className = "rightPane">
-                    <MapContainer center={[50.847, 4.357]} zoom={13} scrollWheelZoom={true} ref={map} style={{ height: '95%', width: '95%' }}>
+                    <MapContainer id="map" center={[50.847, 4.357]} zoom={13} scrollWheelZoom={true} ref={map} style={{ height: '95%', width: '95%' }}>
                         <TileLayer
                             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

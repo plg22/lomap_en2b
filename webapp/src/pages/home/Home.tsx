@@ -9,6 +9,7 @@ import { getLandmarksPOD } from "../../solidHelper/solidLandmarkManagement";
 import markerIcon from "leaflet/dist/images/marker-icon.png"
 import { Icon } from "leaflet";
 import {makeRequest} from "../../axios"; 
+import { wait } from "@testing-library/user-event/dist/utils";
 
 function Home(): JSX.Element {
     const {session} = useSession();

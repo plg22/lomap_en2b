@@ -8,5 +8,14 @@ div [class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leafl
 }
 
 .mainContainer {
-    height: 180vh;
+    height: 200vh;
+}
+
+#foto {
+    width: 20vw;
+    height: 30vh;
+}
+
+#map {
+    margin-right: 20vw;
 }

@@ -24,10 +24,14 @@ export default function AddLandmark() {
     const {session} = useSession();
 
     let picture : string = "";
-    let shouldRedirect : boolean = false;
+    let pictureAsFile : File;
+    let thereIsPhoto : boolean = false;
 
     const setPicture = (e : string) => {
         picture = e;
+    }
+    const setPictureAsFile = (e : File) => {
+        pictureAsFile = e;
     }
 
     const setCoordinates = async (latitude : number, longitude : number) => {
@@ -41,6 +45,15 @@ export default function AddLandmark() {
         await setMarker(new L.Marker([latitude, longitude]).setIcon(L.icon({iconUrl: markerIcon})).addTo(map.current as L.Map));
         await setCoords([latitude, longitude]);
         setIsButtonEnabled(true);        
+    }
+
+    async function readFileAsync(file : any, reader : any) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            reader.onload = () => {
+                resolve(reader.result);
+            }
+            reader.readAsDataURL(file);
+        })
     }
 
     const submit = async (e : React.FormEvent<HTMLFormElement>) => {
@@ -57,9 +70,11 @@ export default function AddLandmark() {
         
         let description : string | undefined = (document.getElementById("description") as HTMLInputElement).value;
 
-        let pictures : string[] = [];
-        if(picture !== "") {
+        let pictures : Array<string> = [];
+        let files : Array<File> = [];
+        if(thereIsPhoto === true) {
             pictures.push(picture);
+            files.push(pictureAsFile);
         }
 
 
@@ -69,7 +84,8 @@ export default function AddLandmark() {
             latitude : latitude,
             longitude : longitude,
             description : description,
-            pictures : pictures
+            pictures : pictures,
+            picturesAsFiles : files
         }
         console.log(landmark);
 
@@ -138,7 +154,7 @@ export default function AddLandmark() {
                             </FormControl>
                             <FormControl>
                                 <Typography style={{color:"#FFF"}}>Add an image</Typography>
-                                <input type="file" id="images" accept=".jpg" onChange={function (e) {
+                                <input type="file" id="images" accept=".jpg" onChange={async function (e) {
                                     const target = e.target as HTMLInputElement;
                                     if (target.files == null){
                                         return;
@@ -150,11 +166,12 @@ export default function AddLandmark() {
                                     }
                                   
                                     const reader = new FileReader();
-                                    reader.onload = (event) => {
-                                      const result = event.target?.result as string;
-                                      setPicture(result);
-                                    };
-                                    reader.readAsDataURL(file);
+
+                                    let res = await readFileAsync(file, reader); // wait for the result
+                                    thereIsPhoto = true;
+                                    setPicture(res);
+                                    setPictureAsFile(file);
+                                    
                                 }}/>
                             </FormControl>     
                             </Grid>

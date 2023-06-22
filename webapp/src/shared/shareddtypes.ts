@@ -15,7 +15,8 @@ export class Landmark  {
     description:string;
     reviews?:Array<Review>;
     scores?:Map<string,Number>;
-    pictures?:string[];
+    pictures?:Array<string>;
+    picturesAsFiles?:Array<File>;
     url?:string;
     constructor(name:string, category:string, latitude:number, longitude:number, description:string, reviews?:Array<Review>, scores?:Map<string,Number>, pictures?:string[], url?:string){
         this.name = name;
