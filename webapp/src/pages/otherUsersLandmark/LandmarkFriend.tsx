@@ -89,35 +89,62 @@ export default function LandmarkFriend() : JSX.Element{
     };
 
     const getReviews = () => {
-        let landmark = getCurrentLandmark();
+        let landmark = getCurrentLandmark() as Landmark;
 
-        if (landmark.reviews === undefined) {
-            return <p></p>;
+        console.log(landmark)
+        console.log(landmark.reviews)
+
+        try {
+            let text : string = "";
+            let review : any;
+            for(let i = 0; i < landmark.reviews!.length; i++) {
+                text += " - ";
+                text += landmark.reviews![i].content;
+            }
+            return text;
+        } catch (error) {
+            console.log("Soy aun mas fatu")
+            return  <div>
+                <Typography> No reviews yet </Typography>
+            </div>;
         }
-        
-        return landmark.reviews.forEach((value) => {
-            <div>
-                <Typography> {value.content} </Typography>
-            </div>
-        });
     }
 
-    const sendComment : Function = async (comment : string) => {
-        let webId : string = session.info.webId!;
-        let date : string = new Date().toLocaleString();
-        let review : Review = new Review(webId, date, "", "", comment);
-        let landmark : Landmark = landmarks.get(selectedMarker) as Landmark;
-        console.log(landmark)
-        await addLandmarkReview(landmark, review);
-        console.log('Se llega a mandar el comment')
+    async function sendComment() {
+        if (document.getElementById("comment") !== null) {
+            let comment : string = (document.getElementById("comment") as HTMLInputElement).value;
+            console.log('Llegamos al primero de comment')
+            console.log(comment)
+            if (comment.trim() !== "") {
+                let webId : string = session.info.webId!;
+                let date : string = new Date().toLocaleString();
+                let review : Review = new Review(webId, date, "", "", comment);
+                let landmark : Landmark = getCurrentLandmark() as Landmark;
+                console.log(landmark)
+                if (landmark.category !== "None selected") {
+                    await addLandmarkReview(landmark, review);
+                    console.log('Se llega a mandar el comment');
+                    (document.getElementById("comment") as HTMLInputElement).value = "";
+                }
+            }
+        }
     };
 
-    const sendScore : Function = async (score : number) => {
-        let landmark : Landmark = landmarks.get(selectedMarker) as Landmark;
-        console.log('Se llega a mandar el score')
-        console.log(landmark)
-        console.log(score)
-        await addLandmarkScore(session.info.webId!, landmark, score);
+    async function sendScore() {
+        if (document.getElementById("score") !== null) {
+            let score : number = parseFloat((document.getElementById("score") as HTMLInputElement)!.value);
+            console.log("Llego al primero");
+            if (!Number.isNaN(score)) {
+                let landmark : Landmark = getCurrentLandmark() as Landmark;
+                console.log(landmark)
+                console.log(score)
+                if (landmark.category !== "None selected") {
+                    console.log('Se llega a mandar el score')
+                    await addLandmarkScore(session.info.webId!, landmark, score);
+                    (document.getElementById("score") as HTMLInputElement).value = "";
+                }
+            }
+        }
     };
 
     return  <div className="mainContainer"><Grid style={{ height: '89vh', width: '100%', marginLeft: '3vw' }} container>
@@ -134,8 +161,28 @@ export default function LandmarkFriend() : JSX.Element{
                             {loadCategories()}
                         </FormControl>
                     </Grid>
-                    <AddScoreForm sendScore={sendScore}/>
-                    <AddCommentForm sendComment={sendComment} />
+
+                    <form>
+                        <Grid container rowSpacing={4}>
+                            <Typography variant="h2" style={{color:"#FFF", fontSize:32}}>Add a score</Typography>
+                            <FormControl fullWidth>
+                                <InputLabel htmlFor="score" style={{color:"#FFF"}}>Score  </InputLabel>
+                                <Input type="number" name = "score" id = "score" inputProps={{min: 1, max: 10}} style={{color:"#FFF"}}/>
+                            </FormControl>
+                            <Grid item><Button onClick={sendScore} variant="contained">Score</Button></Grid>
+                        </Grid>
+                    </form>
+
+                    <form>
+                        <Grid container rowSpacing={4}>
+                            <Typography variant="h2" style={{color:"#FFF", fontSize:32}}>Add a comment</Typography>
+                            <FormControl fullWidth>
+                                <TextField id = "comment" name = "comment" multiline rows = {3} maxRows = {6} style={{color:"#FFF", fontSize:32}}/>
+                            </FormControl>
+                            <Grid item><Button onClick={sendComment} variant="contained">Comment</Button></Grid>
+                        </Grid>
+                    </form>
+                    
                     <Grid>
                             <Typography style={{fontSize: 30}}> Name: </Typography>
                             <Typography> {getCurrentLandmark().name}</Typography>

@@ -21,33 +21,34 @@ function Home(): JSX.Element {
             makeRequest.post("/users/",{solidURL: session.info.webId});
         }
         doGetLandmarks();
-
-        async function getLandmarks(){
-            let fetchedLandmarks : Landmark[] | undefined = await getLandmarksPOD(session.info.webId);
-            if (fetchedLandmarks === undefined) return null;
-            console.log(session.info.webId);
-            setLandmarks(fetchedLandmarks);
-        }
-
-        async function doGetLandmarks() {
-            await getLandmarks();
-            let array : JSX.Element[] = [];
-            landmarks.forEach(landmark => {
-                let element =  <Marker position={[landmark.latitude, landmark.longitude]} icon={new Icon({iconUrl: markerIcon})}>
-                        <Popup>
-                                {landmark.name} - {landmark.category} - {landmark.description} - 
-                                <img src ={landmark.pictures === undefined ? "" :landmark.pictures[0] } alt = "No images" width={200} height={200}></img>
-                        </Popup>
-                    </Marker>;
-                array.push(element);
-                console.log(array);
-                }
-            );
-            
-            setGeneratedLandmarks(array);
-            }
-        doGetLandmarks();
+        wait(10000)
     }, [session.info.webId, landmarks]);
+    
+
+    async function getLandmarks(){
+        let fetchedLandmarks : Landmark[] | undefined = await getLandmarksPOD(session.info.webId);
+        if (fetchedLandmarks === undefined) return null;
+        console.log(session.info.webId);
+        setLandmarks(fetchedLandmarks);
+    }
+
+    async function doGetLandmarks() {
+        await getLandmarks();
+        let array : JSX.Element[] = [];
+        landmarks.forEach(landmark => {
+            let element =  <Marker position={[landmark.latitude, landmark.longitude]} icon={new Icon({iconUrl: markerIcon})}>
+                    <Popup>
+                            {landmark.name} - {landmark.category} - {landmark.description} - 
+                            <img src ={landmark.pictures === undefined ? "" :landmark.pictures[0] } alt = "No images" width={200} height={200}></img>
+                    </Popup>
+                </Marker>;
+            array.push(element);
+            console.log(array);
+            }
+        );
+        
+        setGeneratedLandmarks(array);
+    }
 
     return (
         <div className="homeContainer">
