@@ -76,8 +76,10 @@ export async function getLandmarkFromDataset(landmarkPath:any){
   pictures = await getLandmarkImage(imagesUrl); // get the images
   let reviews: Review[] = []; // initialize array to store the reviewsstring
   reviews = await getLandmarkReviews(datasetPath) // get the reviews
-  let scores : Map<string, number>; // map to store the ratingssendComme
+  let scores : Map<string, Array<Number>>; // map to store the ratingssendComme
   scores = await getLandmarkScores(datasetPath); // get the ratings
+
+  let myScores = scores.get(name);
   
 
   // create Landmark object
@@ -88,7 +90,7 @@ export async function getLandmarkFromDataset(landmarkPath:any){
         longitude: parseFloat(longitude),
         description: description,
         reviews: reviews,
-        scores: scores,
+        scores: myScores,
         pictures: pictures,
         url: url,
   }
@@ -171,7 +173,7 @@ export async function getLandmarkReviews(folder:string) {
  * @returns Map containing the scores and their creator
  */
 export async function getLandmarkScores(folder:string) {
-    let scores : Map<string,number> = new Map<string,number>(); 
+    let dict : Map<string,Array<number>> = new Map<string,Array<number>>();
     try {
       let dataSet = await getSolidDataset(folder, {fetch:fetch}); // get the whole dataset
       // get things of type score
@@ -179,15 +181,24 @@ export async function getLandmarkScores(folder:string) {
       // for each score, create it and add it to the map
       for (let score of things) {
         let value = parseInt(getStringNoLocale(score, SCHEMA_INRUPT.value) as string);
-        let webId = getStringNoLocale(score, SCHEMA_INRUPT.Person) as string;
-  
-        scores.set(webId, value);
+        let landmarkName = getStringNoLocale(score, SCHEMA_INRUPT.name) as string;
+
+        console.log("LandmarkName: " + landmarkName)
+
+        if (dict.has(landmarkName)) {
+          dict.get(landmarkName)!.push(value);
+        } else {
+          let base = new Array<number>();
+          base.push(value);
+          dict.set(landmarkName, base);
+        }
       }
+      console.log(dict);
+      return dict;
   
     } catch (error) {
-      scores = new Map<string, number>(); // retrieve empty map
+      return new Map<string,Array<number>>() // retrieve empty map
     }
-    return scores;
   }
 
 // Writing landmarks to POD
@@ -357,23 +368,23 @@ export async function addLandmarkReview(landmark:Landmark, review:Review){
    */
   export async function addLandmarkScore(webId:string, landmark:Landmark, score:number){
     let url = landmark.url + "/index.ttl" as string; // get location dataset path
-    console.log(url)
   // get dataset
-  let locationDataset = await getSolidDataset(url, {fetch: fetch})
+  let landmarkDataset = await getSolidDataset(url, {fetch: fetch})
   // create score
   let newScore = buildThing(createThing())
     .addStringNoLocale(SCHEMA_INRUPT.value, score.toString())
     .addStringNoLocale(SCHEMA_INRUPT.Person, webId)
+    .addStringNoLocale(SCHEMA_INRUPT.name, landmark.name)
     .addUrl(VCARD.Type, VCARD.hasValue)
     .build();
-    console.log(newScore)
+    console.log("Aqui llego gallu")
   // add score to the dataset
-  locationDataset = setThing(locationDataset, newScore)
-  console.log(locationDataset)
+  landmarkDataset = setThing(landmarkDataset, newScore)
 
   try {
     // save dataset
-    locationDataset = await saveSolidDatasetAt(url, locationDataset, {fetch: fetch});
+    landmarkDataset = await saveSolidDatasetAt(url, landmarkDataset, {fetch: fetch});
+    console.log("Aqui tbn")
   } catch (error){
     console.log(error);
   }

@@ -14,11 +14,11 @@ export class Landmark  {
     longitude:number;
     description:string;
     reviews?:Array<Review>;
-    scores?:Map<string,Number>;
+    scores?:Array<Number>;
     pictures?:Array<string>;
     picturesAsFiles?:Array<File>;
     url?:string;
-    constructor(name:string, category:string, latitude:number, longitude:number, description:string, reviews?:Array<Review>, scores?:Map<string,Number>, pictures?:string[], url?:string){
+    constructor(name:string, category:string, latitude:number, longitude:number, description:string, reviews?:Array<Review>, scores?:Array<Number>, pictures?:string[], url?:string){
         this.name = name;
         this.category = category;
         this.latitude = latitude;

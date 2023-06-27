@@ -57,7 +57,7 @@ export default function LandmarkFriend() : JSX.Element{
             latitude : 0, longitude : 0,
             description : "None selected",
             reviews : [],
-            scores : new Map<string, Number>(),
+            scores : new Array<number>(),
             pictures : [],
             url: "None selected",
         }
@@ -77,22 +77,24 @@ export default function LandmarkFriend() : JSX.Element{
 
     const getScore = () => {
         let score = 0;
-        let landmark = getCurrentLandmark();
+        let landmark = getCurrentLandmark() as Landmark;
+
+        console.log(landmark)
+        console.log(landmark.scores)
 
         if (landmark.scores === undefined) {
             return score;
         }
-        landmark.scores.forEach((value, key) => {
+        landmark.scores.forEach((value) => {
             score += value.valueOf();
+            console.log("Landmark: " + selectedMarker + "  Score: " + score)
         });
-        return score/landmark.scores.size;
+        console.log("Landmark: " + selectedMarker + "  Score: " + score/landmark.scores.length)
+        return score/landmark.scores.length;
     };
 
     const getReviews = () => {
         let landmark = getCurrentLandmark() as Landmark;
-
-        console.log(landmark)
-        console.log(landmark.reviews)
 
         try {
             let text : string = "";
@@ -103,7 +105,6 @@ export default function LandmarkFriend() : JSX.Element{
             }
             return text;
         } catch (error) {
-            console.log("Soy aun mas fatu")
             return  <div>
                 <Typography> No reviews yet </Typography>
             </div>;

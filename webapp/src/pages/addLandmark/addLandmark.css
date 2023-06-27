@@ -26,3 +26,7 @@ input {
 button {
     font-size: 1em;
 }
+
+.mainDiv {
+    height: 200vh;
+}

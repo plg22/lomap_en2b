@@ -10,7 +10,7 @@ test("LandmarkClassIsCorrect", () => {
     let description : string = "TestDescription";
     let pictures : string[] = ["TestPictures"];
     let reviews : Review[] = [];
-    let scores : Map<string, number> = new Map<string, number>();
+    let scores : Array<number> = new Array<number>();
     let url : string = "TestUrl";
 
     
