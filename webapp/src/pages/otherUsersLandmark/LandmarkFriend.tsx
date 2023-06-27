@@ -153,7 +153,11 @@ export default function LandmarkFriend() : JSX.Element{
                     <Typography variant="h1" component="h1" 
                     textAlign={"center"} style={{color:"#FFF", fontSize: 46}} >
                         See friends' landmarks
-                        </Typography>
+                    </Typography>
+                    <Typography variant="h2" component="h2" 
+                    textAlign={"center"} style={{color:"#FFF", fontSize: 18, marginBottom: "2vh"}} >
+                        Landmarks may take a while to load...
+                    </Typography>
                 </Grid>
                 <Grid item xs = {5} className = "leftPane">
                     <Grid container rowGap={4} spacing = {5}>
