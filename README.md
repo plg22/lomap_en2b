@@ -4,6 +4,9 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_lomap_en2b&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_lomap_en2b)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_lomap_en2b&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_lomap_en2b)
 
+## Important message
+This project is intented to work on two ways, deployed and on a pc locally, because of that, if you want to run the program locally, it`s necessary to run it from the develop branch 😊😊
+
 ## Introduction to Lomap
 
 This is an application done by a team of UniOvi students, simulating a project done by a belgian software company, for the Council of Brussels.
