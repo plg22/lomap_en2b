@@ -36,16 +36,13 @@ const Login = () => {
                     onChange={(e: any) => setIdp(e.target.value)}
                     InputProps={{
                         endAdornment: (
-                            // <LoginButton oidcIssuer={idp}
-                            //              redirectUrl="http://172.162.240.176:3000/main/"
-                            //              onError={console.error}>
-                                <Button variant="contained" onClick={(e) => {
-                                    handleSubmit(e);
-                                
-                                }}>
+                            <LoginButton oidcIssuer={idp}
+                                redirectUrl="http://localhost:3000/main"
+                                onError={console.error}>
+                                <Button variant="contained">
                                     Login
                                 </Button>
-                            // </LoginButton>
+                            </LoginButton>
                         ),
                     }}
                 />
@@ -55,3 +52,10 @@ const Login = () => {
 }
 
 export default Login;
+
+/*<Button variant="contained" onClick={(e) => {
+    handleSubmit(e);
+
+}}>
+    Login
+</LoginButton></Button> */

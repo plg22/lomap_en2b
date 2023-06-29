@@ -20,6 +20,12 @@ function Home(): JSX.Element {
         if (session.info.webId !== undefined && session.info.webId !== "") {
             makeRequest.post("/users/",{solidURL: session.info.webId});
         }
+        makeRequest.get("/users/" + session.info.webId?.split("//")[1].split(".")[0]).then((res) => {
+            console.log( res.data[0]._id );
+            console.log( session.info.clientAppId );
+            session.info.clientAppId = res.data[0]._id;
+        })
+        
         doGetLandmarks();
         wait(10000)
     }, [session.info.webId, landmarks]);
