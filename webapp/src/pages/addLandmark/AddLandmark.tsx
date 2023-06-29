@@ -84,7 +84,6 @@ export default function AddLandmark() {
             pictures : pictures,
             picturesAsFiles : files
         }
-        console.log(landmark);
 
         // Access to SOLID
         let webID = session.info.webId;
@@ -99,7 +98,6 @@ export default function AddLandmark() {
                     console.log(res.data.score);
                 })
             })
-            console.log(username);
         }     
     };
 

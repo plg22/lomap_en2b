@@ -43,7 +43,6 @@ function Home(): JSX.Element {
                     </Popup>
                 </Marker>;
             array.push(element);
-            console.log(array);
             }
         );
         

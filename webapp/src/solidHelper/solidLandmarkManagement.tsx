@@ -183,8 +183,6 @@ export async function getLandmarkScores(folder:string) {
         let value = parseInt(getStringNoLocale(score, SCHEMA_INRUPT.value) as string);
         let landmarkName = getStringNoLocale(score, SCHEMA_INRUPT.name) as string;
 
-        console.log("LandmarkName: " + landmarkName)
-
         if (dict.has(landmarkName)) {
           dict.get(landmarkName)!.push(value);
         } else {
@@ -193,7 +191,6 @@ export async function getLandmarkScores(folder:string) {
           dict.set(landmarkName, base);
         }
       }
-      console.log(dict);
       return dict;
   
     } catch (error) {
@@ -340,7 +337,7 @@ export async function addLandmarkImage(url: string, landmark:Landmark) {
 export async function addLandmarkReview(landmark:Landmark, review:Review){
   let url = landmark.url + "/index.ttl" as string
   // get dataset
-  let locationDataset = await getSolidDataset(url, {fetch: fetch})
+  let landmarkDataset = await getSolidDataset(url, {fetch: fetch})
   // create review
   let newReview = buildThing(createThing())
     .addStringNoLocale(SCHEMA_INRUPT.name, review.title)
@@ -350,11 +347,11 @@ export async function addLandmarkReview(landmark:Landmark, review:Review){
     .addUrl(VCARD.Type, VCARD.hasNote)
     .build();
   // store the review in the location dataset
-  locationDataset = setThing(locationDataset, newReview)
+  landmarkDataset = setThing(landmarkDataset, newReview)
 
   try {
     // save dataset
-    locationDataset = await saveSolidDatasetAt(url, locationDataset, {fetch: fetch});
+    landmarkDataset = await saveSolidDatasetAt(url, landmarkDataset, {fetch: fetch});
   } catch (error){
     console.log(error);
   }
@@ -377,14 +374,12 @@ export async function addLandmarkReview(landmark:Landmark, review:Review){
     .addStringNoLocale(SCHEMA_INRUPT.name, landmark.name)
     .addUrl(VCARD.Type, VCARD.hasValue)
     .build();
-    console.log("Aqui llego gallu")
   // add score to the dataset
   landmarkDataset = setThing(landmarkDataset, newScore)
 
   try {
     // save dataset
     landmarkDataset = await saveSolidDatasetAt(url, landmarkDataset, {fetch: fetch});
-    console.log("Aqui tbn")
   } catch (error){
     console.log(error);
   }
