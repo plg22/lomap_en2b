@@ -1,14 +1,10 @@
+import 'leaflet/dist/leaflet.css';
 import "./profile.css";
 
 import {makeRequest} from "../../axios";
 import {useParams} from "react-router";
 import {useEffect, useState} from "react";
 import {useSession} from "@inrupt/solid-ui-react";
-import markerIcon from "leaflet/dist/images/marker-icon.png"
-import { Icon } from "leaflet";
-import {Landmark} from "../../shared/shareddtypes";
-import {MapContainer, Marker, Popup, TileLayer} from "react-leaflet";
-import { getLandmarksPOD } from "../../solidHelper/solidLandmarkManagement";
 
 function Profile(): JSX.Element {
   
@@ -17,8 +13,8 @@ function Profile(): JSX.Element {
   let uuid = useParams().id;
   const {session} = useSession();
   const [webID, setWebID] = useState<string>("");
-  const [landmarks, setLandmarks] = useState<Landmark[]>([]);
-  const [generatedLandmarks, setGeneratedLandmarks] = useState<JSX.Element[]>([]);
+  const [score, setScore] = useState<Number>(0);
+  
   useEffect(() =>{
     
     const fetchUser = async () => {
@@ -28,6 +24,7 @@ function Profile(): JSX.Element {
       }
       makeRequest.get(`/solid/`+ uuid+"").then((res) => { setUser(res.data);});
       makeRequest.get("/users/id/"+uuid).then((res) => { setWebID(res.data.solidURL); });
+      makeRequest.get(`/users/score/`+ uuid+"").then((res) => { setScore(res.data.score);});
 
       let id;
 
@@ -54,32 +51,6 @@ function Profile(): JSX.Element {
     
     }
     fetchUser();
-
-    async function getLandmarks(){
-      let fetchedLandmarks : Landmark[] | undefined = await getLandmarksPOD(webID);
-      if (fetchedLandmarks === undefined) return null;
-      console.log(webID);
-      setLandmarks(fetchedLandmarks);
-  }
-
-  async function doGetLandmarks() {
-      await getLandmarks();
-      let array : JSX.Element[] = [];
-      landmarks.forEach(landmark => {
-          let element =  <Marker position={[landmark.latitude, landmark.longitude]} icon={new Icon({iconUrl: markerIcon})}>
-                  <Popup>
-                          {landmark.name} - {landmark.category}
-                          <img src ={landmark.pictures === undefined ? "" :landmark.pictures[0] } alt = "No images" width={200} height={200}></img>
-                  </Popup>
-              </Marker>;
-          array.push(element);
-          console.log(array);
-          }
-      );
-      
-      setGeneratedLandmarks(array);
-      }
-  doGetLandmarks();
   },[user,setUser,uuid,setWebID,isFriend,setFriend]);
   
   return (
@@ -91,8 +62,6 @@ function Profile(): JSX.Element {
               <img
                 className="profileUserImg"
                 src= {user.picture === null ? "/noAvatar.png" : user.picture}
-                
-                
               />
             </div>
             <div className="profileInfo">
@@ -102,20 +71,14 @@ function Profile(): JSX.Element {
           
           <div className="profileRightBottom">
           {session.info.webId?.split("#")[0] === webID ? "" : isFriend ? "You are already friends": "This user is not your friend" }
-          
+          </div>
+
+          <div className="profileScore">
+          Your current score is: {score}, keep adding landmarks to see how it grows!!!
           </div>
           
           
         </div>
-        <MapContainer center={[50.847, 4.357]} zoom={13}
-                          scrollWheelZoom={true}>
-                <TileLayer
-                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                />
-                { generatedLandmarks }
-            </MapContainer>;
-
       </div>
   );
 }

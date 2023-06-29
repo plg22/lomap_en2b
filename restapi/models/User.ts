@@ -8,6 +8,10 @@ const userSchema = new mongoose.Schema({
     username:{
         type:String,
         require: true
+    },
+    score:{
+        type:Number,
+        required: false
     }
 });
 

@@ -10,7 +10,7 @@ test("LandmarkClassIsCorrect", () => {
     let description : string = "TestDescription";
     let pictures : string[] = ["TestPictures"];
     let reviews : Review[] = [];
-    let scores : Map<string, number> = new Map<string, number>();
+    let scores : Array<number> = new Array<number>();
     let url : string = "TestUrl";
 
     
@@ -44,6 +44,7 @@ test("LandmarkClassIsCorrectPartialConstructor", () => {
     let category : string = "TestCategory";
     let latitude : number = -5.72;
     let longitude : number = 5.33;
+    let description : string = "test";
     let url : string = "TestUrl";
 
     
@@ -52,6 +53,7 @@ test("LandmarkClassIsCorrectPartialConstructor", () => {
         category : category,
         latitude : latitude,
         longitude : longitude,
+        description : description,
         url: url
     }
 
@@ -59,7 +61,7 @@ test("LandmarkClassIsCorrectPartialConstructor", () => {
     assert(landmark.category == "TestCategory");
     assert(landmark.latitude == -5.72);
     assert(landmark.longitude == 5.33);
-    expect(landmark.description).toBeFalsy();
+    expect(landmark.description == "test");
     expect(landmark.pictures).toBeFalsy();
     expect(landmark.reviews).toBeFalsy();
     expect(landmark.scores).toBeFalsy();

@@ -1,0 +1,21 @@
+div [class="leaflet-container leaflet-touch leaflet-fade-anim leaflet-grab leaflet-touch-drag leaflet-touch-zoom"]{
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    width: 90%;
+    height: 87vh;
+    margin-left: 2em;
+}
+
+.mainContainer {
+    height: 200vh;
+}
+
+#foto {
+    width: 20vw;
+    height: 30vh;
+}
+
+#map {
+    margin-right: 20vw;
+}

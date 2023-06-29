@@ -1,6 +1,6 @@
 import markerIcon from "leaflet/dist/images/marker-icon.png"
+import 'leaflet/dist/leaflet.css';
 import "./addLandmark.css";
-import "../../map/stylesheets/addLandmark.css"
 import React, {useRef, useState} from "react";
 import {
     Button, Container, FormControl,
@@ -23,13 +23,17 @@ export default function AddLandmark() {
     const {session} = useSession();
 
     let picture : string = "";
+    let pictureAsFile : File;
+    let thereIsPhoto : boolean = false;
 
     const setPicture = (e : string) => {
         picture = e;
     }
+    const setPictureAsFile = (e : File) => {
+        pictureAsFile = e;
+    }
 
     const setCoordinates = async (latitude : number, longitude : number) => {
-        setIsButtonEnabled(false);
         (map.current as L.Map).panTo([latitude, longitude]);
         if (marker !== null) {
             (map.current as L.Map).removeLayer(marker);
@@ -37,8 +41,16 @@ export default function AddLandmark() {
         (document.getElementById("latitude") as HTMLParagraphElement).textContent = latitude.toFixed(3);
         (document.getElementById("longitude") as HTMLParagraphElement).textContent = longitude.toFixed(3);
         await setMarker(new L.Marker([latitude, longitude]).setIcon(L.icon({iconUrl: markerIcon})).addTo(map.current as L.Map));
-        await setCoords([latitude, longitude]);
-        setIsButtonEnabled(true);        
+        await setCoords([latitude, longitude]);      
+    }
+
+    async function readFileAsync(file : any, reader : any) : Promise<string> {
+        return new Promise((resolve, reject) => {
+            reader.onload = () => {
+                resolve(reader.result);
+            }
+            reader.readAsDataURL(file);
+        })
     }
 
     const submit = async (e : React.FormEvent<HTMLFormElement>) => {
@@ -55,9 +67,11 @@ export default function AddLandmark() {
         
         let description : string | undefined = (document.getElementById("description") as HTMLInputElement).value;
 
-        let pictures : string[] = [];
-        if(picture !== "") {
+        let pictures : Array<string> = [];
+        let files : Array<File> = [];
+        if(thereIsPhoto === true) {
             pictures.push(picture);
+            files.push(pictureAsFile);
         }
 
 
@@ -67,15 +81,24 @@ export default function AddLandmark() {
             latitude : latitude,
             longitude : longitude,
             description : description,
-            pictures : pictures
+            pictures : pictures,
+            picturesAsFiles : files
         }
-        console.log(landmark);
 
         // Access to SOLID
         let webID = session.info.webId;
         if (webID !== undefined) {
             await createLandmark(webID, landmark);
-        }
+            const id = webID.split("#")[0];
+            const url = new URL(id || "");
+            const hostParts = url.host.split('.');
+            const username = hostParts[0];
+            makeRequest.get("/users/"+username).then((res) => {
+                makeRequest.post("/users/score/" + res.data[0]._id).then((res) => {
+                    console.log(res.data.score);
+                })
+            })
+        }     
     };
 
     const map = useRef<L.Map>(null);
@@ -94,7 +117,7 @@ export default function AddLandmark() {
         return null;
     }
 
-    return <Grid container>
+    return <div className="mainDiv"><Grid style={{ height: '90vh', width: '100%' }} container>
             <Grid item xs = {12}>
             <Typography variant="h1" component="h1" textAlign={"center"} style={{color:"#FFF", fontSize: 46}} >Add a landmark</Typography>
             </Grid>
@@ -111,7 +134,8 @@ export default function AddLandmark() {
                                 {selectItems}
                             </Select>
                         </FormControl>
-                        <Grid container rowGap = {4} data-testid="thirdField-testid">
+                        <Grid container rowGap = {1} data-testid="thirdField-testid">
+                        <Typography style={{color:"#FFF"}}>Para marcar, haz click en el mapa</Typography>
                             <FormControl fullWidth>
                                 <Typography style={{color:"#FFF"}}>Latitude:  </Typography>
                                 <Typography id = "latitude" style={{color:"#FFF"}}/>
@@ -122,11 +146,17 @@ export default function AddLandmark() {
                             </FormControl>  
                             <FormControl fullWidth data-testid = "firstField-testid">
                                 <InputLabel style={{color:"#FFF"}}>Description</InputLabel>
-                                <Input id = "description" name = "description" style={{color:"#FFF"}}></Input>
+                                <Input onChange={function() {
+                                    if ((document.getElementById("description") as HTMLInputElement).value === "") {
+                                        setIsButtonEnabled(false);
+                                    } else {
+                                        setIsButtonEnabled(true)
+                                    }
+                                }} id = "description" name = "description" style={{color:"#FFF"}}></Input>
                             </FormControl>
                             <FormControl>
                                 <Typography style={{color:"#FFF"}}>Add an image</Typography>
-                                <input type="file" id="images" accept=".jpg" onChange={function (e) {
+                                <input type="file" id="images" accept=".jpg" onChange={async function (e) {
                                     const target = e.target as HTMLInputElement;
                                     if (target.files == null){
                                         return;
@@ -138,34 +168,41 @@ export default function AddLandmark() {
                                     }
                                   
                                     const reader = new FileReader();
-                                    reader.onload = (event) => {
-                                      const result = event.target?.result as string;
-                                      setPicture(result);
-                                    };
-                                    reader.readAsDataURL(file);
+
+                                    let res = await readFileAsync(file, reader); // wait for the result
+                                    thereIsPhoto = true;
+                                    setPicture(res);
+                                    setPictureAsFile(file);
+                                    
                                 }}/>
                             </FormControl>     
-                            </Grid>
-                                {isButtonEnabled 
+                        </Grid>
+                                {isButtonEnabled
                                 ? <Grid item justifyContent="flex-end">
                                 <Button type = "submit" variant = "contained" data-testid="Save button">
                                     Save new landmark
                                 </Button>
-                            </Grid> 
-                            : null
+                            </Grid> : <Grid item justifyContent="flex-end">
+                                <Button type = "submit" variant = "contained" data-testid="Save button" disabled>
+                                    Save new landmark
+                                </Button>
+                                </Grid>
                         }
                     </Grid>
                 </form>
             </Grid>
             <Grid item xs = {8} className = "rightPane">
-                <MapContainer center={[50.847, 4.357]} zoom={13} scrollWheelZoom={true} ref={map}>
+                <MapContainer center={[50.847, 4.357]} 
+                zoom={13} 
+                scrollWheelZoom={true} 
+                ref={map}
+                style={{ height: '95%', width: '95%' }}>
                 <TileLayer
                     attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                 />
                 <MapEvents />
-            </MapContainer>;
+            </MapContainer>
             </Grid>
-        </Grid>
-        ;
+        </Grid></div>
 }
