@@ -14,7 +14,7 @@ function Profile(): JSX.Element {
   const {session} = useSession();
   const [webID, setWebID] = useState<string>("");
   const [score, setScore] = useState<Number>(0);
-
+  
   useEffect(() =>{
     
     const fetchUser = async () => {
