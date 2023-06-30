@@ -5,7 +5,7 @@ services:
     ports:
       - "8800:8800"
   webapp:
-    image: ghcr.io/arquisoft/lomap_en2b/webapp:latest
+    image: ghcr.io/plg22/lomap_en2b/webapp:latest
     ports:
 
       - "3000:3000"
