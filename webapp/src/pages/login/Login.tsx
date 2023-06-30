@@ -10,7 +10,7 @@ const Login = () => {
         
         e.preventDefault(); //if not used, the page will reload and data will be lost
         login({
-          redirectUrl: "http://localhost:3000/main/", // after redirect, come to the actual page
+          redirectUrl: window.location.href + "main/", // after redirect, come to the actual page
           oidcIssuer: idp, // redirect to the url
           clientName: "Lo Map",
         });
@@ -37,7 +37,7 @@ const Login = () => {
                     InputProps={{
                         endAdornment: (
                             <LoginButton oidcIssuer={idp}
-                                redirectUrl="http://localhost:3000/main"
+                                redirectUrl= {window.location.href + "main/"}
                                 onError={console.error}>
                                 <Button variant="contained">
                                     Login
