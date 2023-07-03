@@ -93,7 +93,7 @@ jobs:
         user: ${{ secrets.DEPLOY_USER }}
         key: ${{ secrets.DEPLOY_KEY }}
         command: |
-          sudo wget -t https://raw.githubusercontent.com/plg22/lomap_en2b/master/docker-compose-deploy.yml
+          sudo wget https://raw.githubusercontent.com/plg22/lomap_en2b/master/docker-compose-deploy.yml
           docker-compose stop
           docker-compose rm -f
           docker-compose pull   
