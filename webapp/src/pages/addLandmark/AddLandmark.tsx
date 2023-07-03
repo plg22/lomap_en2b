@@ -20,6 +20,7 @@ export default function AddLandmark() {
     const [option, setOption] = useState<string>("Other");
     const [marker, setMarker] = useState<L.Marker | null>(null);
     const [isButtonEnabled, setIsButtonEnabled] = useState<boolean>(false);
+    const [isLandmarkAdded, setIsLandmarkAdded] = useState<boolean>(false);
     const {session} = useSession();
 
     let picture : string = "";
@@ -96,6 +97,11 @@ export default function AddLandmark() {
             makeRequest.get("/users/"+username).then((res) => {
                 makeRequest.post("/users/score/" + res.data[0]._id).then((res) => {
                     console.log(res.data.score);
+                    setIsLandmarkAdded(true);
+                    (document.getElementById("addedText") as HTMLInputElement).innerHTML = "Landmark has been added";
+                    (document.getElementById("images") as HTMLInputElement).disabled = true;
+                    (document.getElementById("name") as HTMLInputElement).disabled = true;
+                    (document.getElementById("description") as HTMLInputElement).disabled = true;
                 })
             })
         }     
@@ -124,6 +130,9 @@ export default function AddLandmark() {
             <Grid item xs = {4} className = "leftPane">
                 <form method = "post" className ="addLandmarkForm" onSubmit={submit} data-testid = "form-test">
                     <Grid container spacing={3} rowGap={8}>
+                        <FormControl fullWidth data-testid = "zeroField-testid">
+                            <div id="addedText"> </div>
+                        </FormControl>
                         <FormControl fullWidth data-testid = "firstField-testid">
                             <InputLabel style={{color:"#FFF"}}>Name of the landmark</InputLabel>
                             <Input id = "name" name = "name" style={{color:"#FFF"}}></Input>
@@ -177,7 +186,7 @@ export default function AddLandmark() {
                                 }}/>
                             </FormControl>     
                         </Grid>
-                                {isButtonEnabled
+                                {isButtonEnabled && !isLandmarkAdded
                                 ? <Grid item justifyContent="flex-end">
                                 <Button type = "submit" variant = "contained" data-testid="Save button">
                                     Save new landmark

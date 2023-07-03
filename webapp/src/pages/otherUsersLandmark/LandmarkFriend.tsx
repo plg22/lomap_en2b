@@ -27,12 +27,12 @@ export default function LandmarkFriend() : JSX.Element{
     function changeFilter(name : string) {
         let auxFilters : Map<string, boolean> = filters;
         auxFilters.set(name, (document.getElementById(name.toLowerCase()) as HTMLInputElement).checked);
-        getData(setIsCommentEnabled, setSelectedMarker, setLandmarks, setLandmarksReact, auxFilters, session.info.webId);
+        getData(setIsCommentEnabled, setSelectedMarker, setLandmarks, setLandmarksReact, session.info.webId);
     }
 
     useEffect(() => {
         if (session.info.webId  !== undefined) {
-            getData(setIsCommentEnabled, setSelectedMarker, setLandmarks, setLandmarksReact, filters, session.info.webId);
+            getData(setIsCommentEnabled, setSelectedMarker, setLandmarks, setLandmarksReact, session.info.webId);
         }
     }, [filters, session.info.webId]);
 
@@ -116,6 +116,9 @@ export default function LandmarkFriend() : JSX.Element{
                 if (landmark.category !== "None selected") {
                     await addLandmarkReview(landmark, review);
                     (document.getElementById("comment") as HTMLInputElement).value = "";
+                    getData(setIsCommentEnabled, setSelectedMarker, setLandmarks, setLandmarksReact, webId).then( res =>
+                        (document.getElementsByClassName("reviewsText")[0] as HTMLTextAreaElement).value = String (getReviews())
+                    );
                 }
             }
         }
@@ -129,6 +132,10 @@ export default function LandmarkFriend() : JSX.Element{
                 if (landmark.category !== "None selected") {
                     await addLandmarkScore(session.info.webId!, landmark, score);
                     (document.getElementById("score") as HTMLInputElement).value = "";
+                    getData(setIsCommentEnabled, setSelectedMarker, setLandmarks, setLandmarksReact, session.info!.webId).then( res =>
+                        (document.getElementsByClassName("scoresText")[0] as HTMLTextAreaElement).value = String (getScore())
+                    );
+                    
                 }
             }
         }
@@ -152,6 +159,24 @@ export default function LandmarkFriend() : JSX.Element{
                             {loadCategories()}
                         </FormControl>
                     </Grid>
+                    
+                        <Grid>
+                            <Typography style={{fontSize: 30}}> Name: </Typography>
+                            <Typography> {getCurrentLandmark().name}</Typography>
+                            <Typography style={{fontSize: 30}}> Category: </Typography>
+                            <Typography> {getCurrentLandmark().category}</Typography>
+                            <Typography style={{fontSize: 30}}> Coordinates: </Typography>
+                            <Typography> Latitude: {getCurrentLandmark().latitude} | Longitude {getCurrentLandmark().longitude} </Typography>
+                            <Typography style={{fontSize: 30}}> Description: </Typography>
+                            <Typography> {getCurrentLandmark().description}</Typography>
+                            <Typography style={{fontSize: 30}}> Picture: </Typography>
+                            {getPicture()===undefined ? <p>No picture uploaded</p> : <img id="foto" src={getPicture()} alt="Landmark picture"></img>}
+                            <Typography style={{fontSize: 30}}> Score: </Typography>
+                            <Typography className="scoresText"> {getScore().toString() ==="NaN" ? 0 : getScore() } </Typography>
+                            <Typography className="reviewsText" style={{fontSize: 30}}> Reviews: </Typography>
+                            {getReviews()}
+                            
+                        </Grid>
 
                     <form>
                         <Grid container rowSpacing={4}>
@@ -173,24 +198,6 @@ export default function LandmarkFriend() : JSX.Element{
                             <Grid item><Button onClick={sendComment} variant="contained">Comment</Button></Grid>
                         </Grid>
                     </form>
-                    
-                    <Grid>
-                            <Typography style={{fontSize: 30}}> Name: </Typography>
-                            <Typography> {getCurrentLandmark().name}</Typography>
-                            <Typography style={{fontSize: 30}}> Category: </Typography>
-                            <Typography> {getCurrentLandmark().category}</Typography>
-                            <Typography style={{fontSize: 30}}> Coordinates: </Typography>
-                            <Typography> Latitude: {getCurrentLandmark().latitude} | Longitude {getCurrentLandmark().longitude} </Typography>
-                            <Typography style={{fontSize: 30}}> Description: </Typography>
-                            <Typography> {getCurrentLandmark().description}</Typography>
-                            <Typography style={{fontSize: 30}}> Picture: </Typography>
-                            {getPicture()===undefined ? <p>No picture uploaded</p> : <img id="foto" src={getPicture()} alt="Landmark picture"></img>}
-                            <Typography style={{fontSize: 30}}> Score: </Typography>
-                            <Typography> {getScore().toString() ==="NaN" ? 0 : getScore() } </Typography>
-                            <Typography style={{fontSize: 30}}> Reviews: </Typography>
-                            {getReviews()}
-                            
-                        </Grid>
                 </Grid>
                 <Grid item xs = {7} className = "rightPane">
                     <MapContainer id="map" center={[50.847, 4.357]} zoom={13} scrollWheelZoom={true} ref={map} style={{ height: '95%', width: '95%' }}>
@@ -206,8 +213,7 @@ export default function LandmarkFriend() : JSX.Element{
 }
 
 async function getData(setIsCommentEnabled : Function, setSelectedMarker : Function, 
-                        setLandmarks : Function,setLandmarksReact : Function, 
-                        filters : Map<string, boolean>, webId : string | undefined) {
+                        setLandmarks : Function, setLandmarksReact : Function, webId : string | undefined) {
     if (webId === undefined) return null;
     let fetchedLandmarks = await getFriendsLandmarks(webId);
     if (fetchedLandmarks === undefined) return null;

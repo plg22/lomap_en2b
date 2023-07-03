@@ -67,3 +67,7 @@
     align-items: center;
     justify-content: center;
 }
+
+.profileScore {
+    font-size: x-large;
+}
