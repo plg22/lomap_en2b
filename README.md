@@ -4,35 +4,25 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_lomap_en2b&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Arquisoft_lomap_en2b)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=Arquisoft_lomap_en2b&metric=coverage)](https://sonarcloud.io/summary/new_code?id=Arquisoft_lomap_en2b)
 
+## Team members
+
+Pedro Limeres Granado uo282763@uniovi.es  
+
 ## Important message
-This project is intented to work on two ways, deployed and on a pc locally, because of that, if you want to run the program locally, it`s necessary to run it from the develop branch 😊😊
+This project is intented to work on two ways, deployed and on a pc locally, so in order to make it possible I just made a few changes on the code and now you will be able to run the app correctly on the main branch 😊😊
 
 ## Introduction to Lomap
 
-This is an application done by a team of UniOvi students, simulating a project done by a belgian software company, for the Council of Brussels.
-It is an application where the users can login with their Solid accounts and share their favourite landmarks and places all around the globe with their friends. In the application you will be able to see your friends' landmarks, and you can create landmarks on your favourite places in order to let people see what you enjoy the most about the city of Brussels and also from the whole world.
+This is an application done by a team of UniOvi students, which evolved to being the redo of that application by one student simulating the project done by a belgian software company, for the Council of Brussels. 💻💻
+It is an application where the users can login with their Solid accounts and share their favourite landmarks and places all around the globe with their friends. In the application you will be able to see your friends' landmarks, and you can create landmarks on your favourite places in order to let people see what you enjoy the most about the city of Brussels and also from the whole world. 🌍🌍
 
-This is a website done while we learnt some technologies like **React**, **Typescript** or an endpoint using **NodeJS** with **express**. 
+This is a website done while we learnt some technologies like **React**, **Typescript** or an endpoint using **NodeJS** with **express**.  🧐🤓
 
 <p align="center">
 <img src="https://blog.wildix.com/wp-content/uploads/2020/06/react-logo.jpg" height="100">
 <img src="https://miro.medium.com/max/1200/0*RbmfNyhuBb8G3LWh.png" height="100">
 <img src="https://miro.medium.com/max/365/1*Jr3NFSKTfQWRUyjblBSKeg.png" height="100">
 </p>
-
-## Team members
-
-Pedro Limeres Granado uo282763@uniovi.es  
-
-## Sections
-
-* [Quickstart guide](#quickstart-guide)
-* [Webapp](#webapp)
-
-## You might also be interested in
-
-* [Deployment](/Deployment)
-* [Other information](/OtherInformation)
 
 ## Quickstart guide
 
@@ -47,75 +37,20 @@ Download the project with :
 git clone https://github.com/arquisoft/lomap_en2b
 ```
 
-The fastest way to launch everything is with docker:
-```bash
-docker-compose up --build
-```
-This will create two docker images as they don't exist in your system (the webapp and the restapi) and launch a mongo container database. It will also launch Prometheus and Grafana containers to monitor the webservice. You should be able to access everything from the following links:
- - [Webapp - http://localhost:3000](http://localhost:3000)
- - [RestApi example call - http://localhost:5000/api/users/list](http://localhost:5000/api/users/list)
- - [RestApi raw metrics - http://localhost:5000/metrics](http://localhost:5000/metrics)
- - [Prometheus server - http://localhost:9090](http://localhost:9090)
- - [Grafana server http://localhost:9091](http://localhost:9091)
- 
-If you want to run it without docker. Compile and run the restapi:
+For running it, compile and run the restapi, starting from the base folder:
 ```shell
 cd restapi
-npm install
-npm start
+npm i
+npm run dev
 ```
 
 Now the webapp:
 
 ```shell
 cd webapp
-npm install
+npm i
 npm start
 ```
 
+This runs the application in local, take into account you must have nodejs installed in the system.
 You should be able to access the application in [http://localhost:3000](http://localhost:3000).
-
-## Webapp
-
-### Running the webapp
-
-In this case we are using React with Typescript for the webapp. Lets create the app in the directory webapp with the following command (make sure you have npm installed in your system):
-```console
-cd webapp
-npm i
-npm start
-```
-And open a new command console and execute
-```console
-cd restapi
-npm i
-npm run dev
-```
-This runs the application in local, take into account you must have nodejs installed in the system. To access the webpage access in a browser write: localhost:3000
-
-
-### Testing the Webapp and the Restapi
-
-#### Unit tests
-
-Basically these tests make sure that each component work isolated. It is important to check that they render properly. These tests are done using jest and you can execute them with `npm run test`. A code coverage analysis is generated every time we run the tests. If properly configured, this can be exploited by tools like [SonarCloud](https://sonarcloud.io/) to create reports of code coverage.
-These tests have been done both on the webapp and on the restapi.
-
-#### e2e tests
-
-These type of tests make sure that the navigation on the web page is as expected. They are done using cucumber, and they are run via an automatic web browser that executes the orders we want, and compares the results it gets with the ones we want to get.
-```console
-cd restapi
-npm i
-npm run test:e2e
-```
-
-#### Load Testing
-
-These type of tests, we external to the code, and they measured how the web application worked facing some high trafic of users, we tried to simulate different scenarios and also we tried with different number o users. We used the tool Gatling for making these tests.
-
-### Docker image for the web app
-
-The `Dockerfile` for the webapp is pretty simple. Just copy the app, install the dependencies, build the production version an then run a basic webserver to launch it. 
-
-In order to run the app, we need a server. `npm start` is not good for production so we are going to use [Express](https://expressjs.com/es/). Check [server.js](webapp/server.ts) in the webapp to understand the configuration. As we will run it in port 3000 (in localhost), we have to bind this port with the port in our local machine.
