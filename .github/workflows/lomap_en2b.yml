@@ -62,7 +62,7 @@ jobs:
       env:
         API_URI: http://${{ secrets.DEPLOY_HOST }}:8800/
       with:
-          name: plg22/lomap_en2b/webapp
+          name: plg22/lomap_en2b/webapp:latest
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKER_PUSH_TOKEN }}
           registry: ghcr.io
@@ -76,7 +76,7 @@ jobs:
     - name: Publish to Registry
       uses: elgohr/Publish-Docker-Github-Action@v5
       with:
-          name: plg22/lomap_en2b/restapi
+          name: plg22/lomap_en2b/restapi:latest
           username: ${{ github.actor }}
           password: ${{ secrets.DOCKER_PUSH_TOKEN }}
           registry: ghcr.io
