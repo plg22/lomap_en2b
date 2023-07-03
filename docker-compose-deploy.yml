@@ -7,7 +7,6 @@ services:
   webapp:
     image: ghcr.io/plg22/lomap_en2b/webapp:latest
     ports:
-
       - "3000:3000"
     depends_on: 
       - restapi
