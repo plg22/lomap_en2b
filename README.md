@@ -34,7 +34,7 @@ This is a website done while we learnt some technologies like **React**, **Types
 
 Download the project with :
 ```bash
-git clone https://github.com/arquisoft/lomap_en2b
+git clone https://github.com/plg22/lomap_en2b
 ```
 
 For running it, compile and run the restapi, starting from the base folder:
