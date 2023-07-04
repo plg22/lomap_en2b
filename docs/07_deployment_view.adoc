@@ -5,24 +5,7 @@
 
 === Infrastructure Level 1
 
-[plantuml,"Deployment diagram",png, id = "DeployDiagramView"]
-----
-@startuml
-header Deployment view
-title Deployment view
-
-agent "LoMap server"
-agent "OpenStreetMaps"
-agent "LeafletJS"
-database "Database"
-agent Pod
-
-Pod <-> "LoMap server"
-"OpenStreetMaps" -> "LeafletJS"
-"LeafletJS" --> "LoMap server"
-"Database" <-> "LoMap server"
-@enduml
-----
+image::DPView.png[Deployment View Diagram]
 
 Motivation::
 
